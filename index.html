@@ -11,6 +11,7 @@
 		<div id="map"></div>
 		<script type="text/javascript">
 			var map;
+			var markers = [];
 			function initMap() {
 
 				map = new google.maps.Map(document.getElementById('map'), {
@@ -24,14 +25,6 @@
 					title: 'First Marker!'
 				});
 
-				//var infowindow = new google.maps.InfoWindow({
-				//	content: 'This is Wanda metropolitano'
-				//});
-
-				//marker.addListener('click', function() {
-				//	infowindow.open(map, marker);
-				//});
-
 				// These are the real estate listings that will be shown to the user.
         		// Normally we'd have these in a database instead.
         		var locations = [
@@ -43,6 +36,52 @@
           			{title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
         		];
 
+        		// Looping through the locations for making the marker for the
+        		// individual locations.
+        		for (var i = 0; i < locations.length; i++) {
+
+        			// Get the position from the location array.
+        			var position = locations[i].location;
+        			var title = locations[i].title;
+        			var largeInfoWindow = new google.maps.InfoWindow();
+
+        			// Create a marker per location.
+        			var marker = new google.maps.Marker({
+        				map: map,
+        				position: position,
+        				title: title,
+        				animation: google.maps.Animation.DROP,
+        				id: 1
+        			});
+
+        			// push the marker to our array of markers.
+        			markers.push(marker);
+
+        			// console.log(marker);
+
+        			// Create an onclick even to open an infoWindow at each marker.
+        			marker.addListener('click', function() {
+        				populateInfoWindow(this, largeInfoWindow);
+        			});
+        		}
+
+        		// Function to populate hte infowindow when the marker is clicked.
+        		// Allowing only one marker per location.
+        		function populateInfoWindow(marker, infoWindow) {
+
+        			// Check to make sure the infoWindow is not already opened 
+        			// on this marker.
+        			if (infoWindow.marker != marker) {
+        				infoWindow.marker = marker;
+        				infoWindow.setContent('<div>' + marker.title + '</div>');
+        				infoWindow.open(map, marker);
+
+        				// Make sure the marker property is cleared if the infoWindow is closed.
+        				infoWindow.addListener('closeclick', function() {
+        					infoWindow.setMarker(null);
+        				});
+        			}
+        		}
 			}
 		</script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
