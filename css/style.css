@@ -43,3 +43,17 @@ h1 {
     width: 200px;
     height: 200px;
 }
+
+.text {
+	font-size: 12px;
+}
+
+#zoom-to-area-text {
+	position: relative;
+	width: 70%;
+}
+
+#zoom-to-area {
+	width: 24%;
+}
+
