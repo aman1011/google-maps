@@ -23,6 +23,14 @@
 					map: map,
 					title: 'First Marker!'
 				});
+
+				var infowindow = new google.maps.InfoWindow({
+					content: 'This is Wanda metropolitano'
+				});
+
+				marker.addListener('click', function() {
+					infowindow.open(map, marker);
+				});
 			}
 		</script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
