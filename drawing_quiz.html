@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Google maps</title>
+		<link rel=stylesheet type=text/css href='css/style.css'>
+   	</head>
+	<body>
+		<div class="container">
+			<div class="options-box">
+				<h1>Find your new NYC home</h1>
+				<div>
+					<input id="show-listings" type="button" value="Show Listings">
+					<input id="hide-listings" type="button" value="Hide Listings">
+					<hr>
+					<span class="text"> Draw the shape to search within </span>
+					<input id='toggle-drawing' type='button' value="Drawing Tools">
+				</div>
+			</div>
+			<div id="map"></div>
+		</div>
+		<script>
+      		var map;
+      		var polygon = null;
+      		var styles = [
+			    {
+			        "featureType": "all",
+			        "elementType": "all",
+			        "stylers": [
+			            {
+			                "visibility": "on"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "all",
+			        "elementType": "labels",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            },
+			            {
+			                "saturation": "-100"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "all",
+			        "elementType": "labels.text.fill",
+			        "stylers": [
+			            {
+			                "saturation": 36
+			            },
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 40
+			            },
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "all",
+			        "elementType": "labels.text.stroke",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            },
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 16
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "all",
+			        "elementType": "labels.icon",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "administrative",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 20
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "administrative",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 17
+			            },
+			            {
+			                "weight": 1.2
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "landscape",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 20
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "landscape",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#4d6059"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "landscape",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#4d6059"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "landscape.natural",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#4d6059"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "poi",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "lightness": 21
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "poi",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#4d6059"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "poi",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#4d6059"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "visibility": "on"
+			            },
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.highway",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            },
+			            {
+			                "lightness": 17
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.highway",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            },
+			            {
+			                "lightness": 29
+			            },
+			            {
+			                "weight": 0.2
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.arterial",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 18
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.arterial",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.arterial",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.local",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 16
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.local",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "road.local",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#7f8d89"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "transit",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "color": "#000000"
+			            },
+			            {
+			                "lightness": 19
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "all",
+			        "stylers": [
+			            {
+			                "color": "#2b3638"
+			            },
+			            {
+			                "visibility": "on"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "geometry",
+			        "stylers": [
+			            {
+			                "color": "#2b3638"
+			            },
+			            {
+			                "lightness": 17
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "geometry.fill",
+			        "stylers": [
+			            {
+			                "color": "#24282b"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "geometry.stroke",
+			        "stylers": [
+			            {
+			                "color": "#24282b"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "labels",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "labels.text",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "labels.text.fill",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "labels.text.stroke",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    },
+			    {
+			        "featureType": "water",
+			        "elementType": "labels.icon",
+			        "stylers": [
+			            {
+			                "visibility": "off"
+			            }
+			        ]
+			    }
+        	];
+ 
+		      
+		    // Create a new blank array for all the listing markers.
+		    var markers = [];
+		    function initMap() {
+
+			    // Constructor creates a new map - only center and zoom are required.
+			    map = new google.maps.Map(document.getElementById('map'), {
+			    	center: {lat: 40.7413549, lng: -73.9980244},
+			    	styles: styles,
+			    	mapTypeControl: false,
+			        zoom: 13
+			    });
+
+			    // These are the real estate listings that will be shown to the user.
+			    // Normally we'd have these in a database instead.
+			    var locations = [
+			    	{title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
+			        {title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
+			        {title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
+			        {title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
+			        {title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
+			        {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
+			    ];
+
+			    var largeInfowindow = new google.maps.InfoWindow();
+			    var bounds = new google.maps.LatLngBounds();
+
+			    // Drawing manager.
+			    var drawingManager = new google.maps.drawing.DrawingManager({
+			    	drawingMode: google.maps.drawing.OverlayType.POLYGON,
+			    	drawingControl: true,
+			    	drawingControlOptions: {
+			    		position: google.maps.ControlPosition.TOP_LEFT,
+			    		drawingModes: [
+			    			google.maps.drawing.OverlayType.POLYGON
+			    		]
+			    	}
+			    });
+
+			    // Creating two new marker icons.
+			    var defaultIcon = makeMarkerIcon('0091ff');
+			    var highlightedIcon = makeMarkerIcon('FFFF24');
+
+			    // Icon maker function.
+			    function makeMarkerIcon(markerColor) {
+			    	var markerImage = new google.maps.MarkerImage(
+			    		'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
+			    		new google.maps.Size(21, 34),
+			    		new google.maps.Point(0, 0),
+			    		new google.maps.Point(10, 34),
+			    		new google.maps.Size(21, 34)
+			    	);
+
+			    	return markerImage;
+			    }
+
+
+			    // The following group uses the location array to create an array of markers on 
+			    for (var i = 0; i < locations.length; i++) {
+			        // Get the position from the location array.
+			        var position = locations[i].location;
+			        var title = locations[i].title;
+			          
+			        // Create a marker per location, and put into markers array.
+			        var marker = new google.maps.Marker({
+			            position: position,
+			            title: title,
+			            animation: google.maps.Animation.DROP,
+			            id: i,
+			            icon: defaultIcon,
+			        });
+
+			        // Push the marker to our array of markers.
+			        markers.push(marker);
+
+			        // Create an onclick event to open an infowindow at each marker.
+			        marker.addListener('click', function() {
+			            populateInfoWindow(this, largeInfowindow);
+			        });
+
+			        // Event listeners dor mouseover and mouse out.
+			    	marker.addListener('mouseover', function() {
+			    		this.setIcon(highlightedIcon);
+			    	});
+
+			    	marker.addListener('mouseout', function() {
+			    		this.setIcon(defaultIcon);
+			    	});
+			        bounds.extend(markers[i].position);
+			    }
+
+			    // Event listeners for button.
+			    document.getElementById('show-listings').addEventListener('click', showListings);
+			    document.getElementById('hide-listings').addEventListener('click', hideListings);
+			    document.getElementById('toggle-drawing').addEventListener('click', function() {
+			    	toggleDrawing(drawingManager);
+			    });
+
+			    // Adding event listener so that when the polygon is 
+			    // captured, call the searchWithinPolygon function. This
+			    // will show the markers in the polygon, 
+			    // and hide any outside of it.
+			    drawingManager.addListener('overlaycomplete', function(event) {
+
+			    	// remove the existing polygon.
+			    	if (polygon) {
+			    		polygon.setMap(null);
+			    		hideListings(markers);
+			    	}
+
+			    	// switching the drawing mode to non drawing mode.
+			    	drawingManager.setDrawingMode(null);
+
+			    	// creating a new editable polygon from the overlay.
+			    	polygon = event.overlay;
+			    	polygon.setEditable(true);
+			    	console.log('yay');
+			    	console.log(polygon.overlay);
+
+			    	// Call searchWithinPolygon();
+			    	searchWithinPolygon();
+
+			    	// Make sure the search is re-done if the poly is changed.
+			    	polygon.getPath().addListener('set_at', searchWithinPolygon);
+			    	polygon.getPath().addListener('insert_at', searchWithinPolygon);
+
+			    	//compute the area.
+			    	var polyLocations = polygon.getPath();
+			    	var encodestring = google.maps.geometry.encoding.encodePath(polyLocations);
+			    	var area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+			    	window.alert(area + " SQUARE METERS");
+			    	console.log(encodestring); 
+			    }); 
+			}
+
+		    // This function populates the infowindow when the marker is clicked. We'll only allow
+		    // one infowindow which will open at the marker that is clicked, and populate based
+		    // on that markers position.
+		    function populateInfoWindow(marker, infowindow) {
+		       	
+		       	// Check to make sure the infowindow is not already opened on this marker.
+		        if (infowindow.marker != marker) {
+		       		infowindow.marker = marker;
+		          	infowindow.setContent('<div>' + marker.title + '</div>');
+		          	infowindow.open(map, marker);
+
+		          	// Make sure the marker property is cleared if the infowindow is closed.
+		          	infowindow.addListener('closeclick',function(){
+		            	infowindow.setMarker = null;
+		          	});
+
+		          	var streetViewService = new google.maps.StreetViewService();
+		          	var radius = 50;
+
+		          	// in case the status is OK, which means the pano was found, compute the 
+		          	// position of the streetview image, then calculate the heading, then get 
+		          	// a panorama from that and set the options.
+		          	function getStreetView(data, status) {
+		          		if (status == google.maps.StreetViewStatus.OK) {
+		          			var nearStreetViewLocation = data.location.latLng;
+		          			var heading = google.maps.geometry.spherical.computeHeading(
+		          				nearStreetViewLocation, marker.position);
+		          			infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+		          			var panoramaOptions = {
+		          				position: nearStreetViewLocation,
+		          				pov: {
+		          					heading: heading,
+		          					pitch: 30
+		          				}
+		          			};
+		          			var panorama = new google.maps.StreetViewPanorama(
+		          				document.getElementById('pano'), panoramaOptions);
+
+		          		} else {
+		          			infowindow.setContent('<div>' + marker.title + '</div>' + '<div>No Street View Found</div>');
+		          		}
+		          	}
+
+		          	// Use streetview service to get the closests streetview image
+		          	// within 50 meters of the markers position.
+		          	streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+		          	infowindow.open(map, marker);
+		        }
+		    }
+
+		    // Function to loop throught the markers array and display them all.
+		    function showListings() {
+		    	var bounds = new google.maps.LatLngBounds();
+
+		    	// Extend the boundaries of the map for each marker and display the marker.
+		    	for (var i=0; i < markers.length; i++) {
+		    		markers[i].setMap(map);
+		    		bounds.extend(markers[i].position);
+		    	}
+		    	map.fitBounds(bounds);
+		    }
+
+		    // function hide listings to hide all markers.
+		    function hideListings() {
+		    	for (var i = 0; i < markers.length; i++) {
+		    		markers[i].setMap(null);
+		    	}
+		    }
+
+		    // function toggleDrawing for toggling.
+		    function toggleDrawing(drawingManager) {
+		    	if (drawingManager.map) {
+		    		drawingManager.setMap(null);
+
+		    		// gettting rid of ploygon drawn by user.
+		    		if (polygon != null) {
+		    			polygon.setMap(null);
+		    		}
+		    	} else {
+		    		drawingManager.setMap(map);
+		    	}
+		    }
+
+		    // This function hides all markers outside the polygon,
+      		// and shows only the ones within it. This is so that the
+      		// user can specify an exact area of search.
+      		function searchWithinPolygon() {
+        		for (var i = 0; i < markers.length; i++) {
+          			if (google.maps.geometry.poly.containsLocation(markers[i].position, polygon)) {
+            			markers[i].setMap(map);
+          			} else {
+            			markers[i].setMap(null);
+          			}
+        		}
+      		}
+     	</script>
+		<script src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
+    async defer></script>
+	</body>
+</html>
