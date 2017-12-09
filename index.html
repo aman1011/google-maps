@@ -392,6 +392,7 @@
 			    map = new google.maps.Map(document.getElementById('map'), {
 			    	center: {lat: 40.7413549, lng: -73.9980244},
 			    	styles: styles,
+			    	mapTypeControl: false,
 			        zoom: 13
 			    });
 
@@ -409,6 +410,24 @@
 			    var largeInfowindow = new google.maps.InfoWindow();
 			    var bounds = new google.maps.LatLngBounds();
 
+			    // Creating two new marker icons.
+			    var defaultIcon = makeMarkerIcon('0091ff');
+			    var highlightedIcon = makeMarkerIcon('FFFF24');
+
+			    // Icon maker function.
+			    function makeMarkerIcon(markerColor) {
+			    	var markerImage = new google.maps.MarkerImage(
+			    		'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
+			    		new google.maps.Size(21, 34),
+			    		new google.maps.Point(0, 0),
+			    		new google.maps.Point(10, 34),
+			    		new google.maps.Size(21, 34)
+			    	);
+
+			    	return markerImage;
+			    }
+
+
 			    // The following group uses the location array to create an array of markers on 
 			    for (var i = 0; i < locations.length; i++) {
 			        // Get the position from the location array.
@@ -420,7 +439,8 @@
 			            position: position,
 			            title: title,
 			            animation: google.maps.Animation.DROP,
-			            id: i
+			            id: i,
+			            icon: defaultIcon,
 			        });
 
 			        // Push the marker to our array of markers.
@@ -430,6 +450,15 @@
 			        marker.addListener('click', function() {
 			            populateInfoWindow(this, largeInfowindow);
 			        });
+
+			        // Event listeners dor mouseover and mouse out.
+			    	marker.addListener('mouseover', function() {
+			    		this.setIcon(highlightedIcon);
+			    	});
+
+			    	marker.addListener('mouseout', function() {
+			    		this.setIcon(defaultIcon);
+			    	});
 			        bounds.extend(markers[i].position);
 			    }
 
