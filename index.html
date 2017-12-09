@@ -4,6 +4,25 @@
 		<title>Google maps</title>
 		<style type="text/css">
      		html, body { height: 100%; margin: 0; padding: 0; }
+
+	      	.container {
+	        	height: 100%;
+	        	position: relative;
+	      	}
+	      	input {
+	        	font-size: 12px;
+	      	}
+	      	h1 {
+	        	color: #525454;
+	        	font-size: 22px;
+	        	margin: 0 0 10px 0;
+	        	text-align: center;
+	      	}
+	      	#hide-listings,
+	      	#show-listings {
+	        	width: 48%;
+	        	background: white;
+	      	}
      		#map { 
      			height: 100%; 
      			bottom: 0px;
@@ -22,7 +41,6 @@
      			text-align: left;
      			width: 340px;
      		}
-
    		</style>
    	</head>
 	<body>
@@ -71,7 +89,6 @@
 			          
 			        // Create a marker per location, and put into markers array.
 			        var marker = new google.maps.Marker({
-			        	map: map,
 			            position: position,
 			            title: title,
 			            animation: google.maps.Animation.DROP,
@@ -87,9 +104,10 @@
 			        });
 			        bounds.extend(markers[i].position);
 			    }
-		        
-			    // Extend the boundaries of the map for each marker
-			    map.fitBounds(bounds);
+
+			    // Event listeners for button.
+			    document.getElementById('show-listings').addEventListener('click', showListings);
+			    document.getElementById('hide-listings').addEventListener('click', hideListings);
 			}
 
 		    // This function populates the infowindow when the marker is clicked. We'll only allow
@@ -109,7 +127,26 @@
 		          	});
 		        }
 		    }
-    	</script>
+
+		    // Function to lssop throught the markers array and display them all.
+		    function showListings() {
+		    	var bounds = new google.maps.LatLngBounds();
+
+		    	// Extend the boundaries of the map for each marker and display the marker.
+		    	for (var i=0; i < markers.length; i++) {
+		    		markers[i].setMap(map);
+		    		bounds.extend(markers[i].position);
+		    	}
+		    	map.fitBounds(bounds);
+		    }
+
+		    // function hide listings to hide all markers.
+		    function hideListings() {
+		    	for (var i = 0; i < markers.length; i++) {
+		    		markers[i].setMap(null);
+		    	}
+		    }
+     	</script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
     async defer></script>
 	</body>
