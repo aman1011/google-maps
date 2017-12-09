@@ -11,12 +11,16 @@
 				<div>
 					<input id="show-listings" type="button" value="Show Listings">
 					<input id="hide-listings" type="button" value="Hide Listings">
+					<hr>
+					<span class="text"> Draw the shape to search within </span>
+					<input id='toggle-drawing' type='button' value="Drawing Tools">
 				</div>
 			</div>
 			<div id="map"></div>
 		</div>
 		<script>
       		var map;
+      		var polygon = null;
       		var styles = [
 			    {
 			        "featureType": "all",
@@ -410,6 +414,18 @@
 			    var largeInfowindow = new google.maps.InfoWindow();
 			    var bounds = new google.maps.LatLngBounds();
 
+			    // Drawing manager.
+			    var drawingManager = new google.maps.drawing.DrawingManager({
+			    	drawingMode: google.maps.drawing.OverlayType.POLYGON,
+			    	drawingControl: true,
+			    	drawingControlOptions: {
+			    		position: google.maps.ControlPosition.TOP_LEFT,
+			    		drawingModes: [
+			    			google.maps.drawing.OverlayType.POLYGON
+			    		]
+			    	}
+			    });
+
 			    // Creating two new marker icons.
 			    var defaultIcon = makeMarkerIcon('0091ff');
 			    var highlightedIcon = makeMarkerIcon('FFFF24');
@@ -465,6 +481,36 @@
 			    // Event listeners for button.
 			    document.getElementById('show-listings').addEventListener('click', showListings);
 			    document.getElementById('hide-listings').addEventListener('click', hideListings);
+			    document.getElementById('toggle-drawing').addEventListener('click', function() {
+			    	toggleDrawing(drawingManager);
+			    });
+
+			    // Adding event listener so that when the polygon is 
+			    // captured, call the searchWithinPolygon function. This
+			    // will show the markers in the polygon, 
+			    // and hide any outside of it.
+			    drawingManager.addListener('overlaycomplete', function(event) {
+
+			    	// remove the existing polygon.
+			    	if (polygon) {
+			    		polygon.setMap(null);
+			    		hideListings(markers);
+			    	}
+
+			    	// switching the drawing mode to non drawing mode.
+			    	drawingManager.setDrawingMode(null);
+
+			    	// creating a new editable polygon from the overlay.
+			    	polygon = event.overlay;
+			    	polygon.setEditable(true);
+
+			    	// Call searchWithinPolygon();
+			    	searchWithinPolygon();
+
+			    	// Make sure the search is re-done if the poly is changed.
+			    	polygon.getPath().addListener('set_at', searchWithinPolygon);
+			    	polygon.getPath().addListener('insert_at', searchWithinPolygon);
+			    }); 
 			}
 
 		    // This function populates the infowindow when the marker is clicked. We'll only allow
@@ -517,7 +563,7 @@
 		        }
 		    }
 
-		    // Function to lssop throught the markers array and display them all.
+		    // Function to loop throught the markers array and display them all.
 		    function showListings() {
 		    	var bounds = new google.maps.LatLngBounds();
 
@@ -535,8 +581,35 @@
 		    		markers[i].setMap(null);
 		    	}
 		    }
+
+		    // function toggleDrawing for toggling.
+		    function toggleDrawing(drawingManager) {
+		    	if (drawingManager.map) {
+		    		drawingManager.setMap(null);
+
+		    		// gettting rid of ploygon drawn by user.
+		    		if (polygon != null) {
+		    			polygon.setMap(null);
+		    		}
+		    	} else {
+		    		drawingManager.setMap(map);
+		    	}
+		    }
+
+		    // This function hides all markers outside the polygon,
+      		// and shows only the ones within it. This is so that the
+      		// user can specify an exact area of search.
+      		function searchWithinPolygon() {
+        		for (var i = 0; i < markers.length; i++) {
+          			if (google.maps.geometry.poly.containsLocation(markers[i].position, polygon)) {
+            			markers[i].setMap(map);
+          			} else {
+            			markers[i].setMap(null);
+          			}
+        		}
+      		}
      	</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
+		<script src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyAJZiVbDVmFXz8_kPBjfugqCj68BPAKE88&callback=initMap"
     async defer></script>
 	</body>
 </html>
