@@ -20,3 +20,12 @@ var myPlaces = [
 	Address: '121 Walton Breck Rd, Liverpool L4 0RD, UK'
 }
 ];
+
+var ViewModel = function () {
+
+	// making an observable array of locations.
+	console.log(myPlaces);
+	this.placeList = ko.observableArray(myPlaces);
+}
+
+ko.applyBindings(new ViewModel())
