@@ -48,9 +48,10 @@ h1 {
 	font-size: 12px;
 }
 
-#zoom-to-area-text {
+#filter-area {
 	position: relative;
 	width: 70%;
+	margin-left: 5%;
 }
 
 #zoom-to-area {
