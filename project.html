@@ -16,7 +16,7 @@
 				<hr>
 				<div>
 					<ul data-bind='foreach: allPlaces'>
-						<div class="pubs" data-bind='text: name'></div>
+						<div class="pubs" data-bind='text: name, click: $parent.setCurrentPlace'></div>
 					</ul>
 				</div>
 			</div>

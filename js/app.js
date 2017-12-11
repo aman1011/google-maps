@@ -3,9 +3,9 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 	var self = this;
 
-	self.map = googleMap;
+	this.map = googleMap;
 	this.allPlaces = ko.observableArray([]);
-	self.markers = [];
+	this.markers = [];
     myPlaces.forEach(function(place) {
     	var newObj = new Place(place);
     	var title = newObj.name;
@@ -37,11 +37,12 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
   	});
 
   	// function to set the current place.
-  	//self.setCurrentPlace() = function(place) {
-
-  	//}
-
-
+  	this.setCurrentPlace = function(place) {
+  		for( var i = 0; i < self.markers.length; i++) {
+  			console.log(self.markers[i]);
+  			self.markers[i].setMap(null);
+  		}
+  	}
 }
 
 var Place = function(data) {
