@@ -6,12 +6,12 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.map = googleMap;
 	this.allPlaces = ko.observableArray([]);
 	this.markers = [];
+	var geocoder = new google.maps.Geocoder();
     myPlaces.forEach(function(place) {
     	var newObj = new Place(place);
     	var title = newObj.name;
 
     	// Getting the geocode for the place.
-    	var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({ 'address': place.address }, function(results, status) {
     		if (status == google.maps.GeocoderStatus.OK) {
         		marker = new google.maps.Marker({
@@ -37,10 +37,49 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
   	});
 
   	// function to set the current place.
-  	this.setCurrentPlace = function(place) {
+  	this.clearAllMarkers = function() {
+  		console.log(self.markers.length);
+  		console.log('reaching here');
   		for( var i = 0; i < self.markers.length; i++) {
-  			console.log(self.markers[i]);
-  			self.markers[i].setMap(null);
+  			//debugger;
+  			// console.log(self.markers[i]);
+  			// Making all markers disappear
+  			self.markers[i].setVisible(false);
+  			//debugger;
+  		}
+  		//debugger;
+  	}
+
+  	this.setCurrentPlace = function(place) {
+  		//debugger;
+  		self.clearAllMarkers();
+  		console.log('cleared all');
+  		for( var i = 0; i < self.markers.length; i++) {
+
+  			if (place.name == self.markers[i].title) {
+  				console.log('reaching in if');
+	  			// Making a marker appear for the current clicked place.
+	  			// Getting the geocode for the place.
+				geocoder.geocode({ 'address': place.address }, function(results, status) {
+	    			if (status == google.maps.GeocoderStatus.OK) {
+	        			marker = new google.maps.Marker({
+	            			map: self.map,
+	            			position: results[0].geometry.location,
+	            			animation: google.maps.Animation.DROP,
+	            			title: place.name,
+	            			address: place.address
+	        			});
+	        		}
+
+	        		(function (marker, title) {
+	                     google.maps.event.addListener(marker, 'click', function () {
+	                         populateinfoWindow(marker, infoWindow);
+	                     });
+	                 })(marker, place.name);
+
+	                 bounds.extend(marker.position);
+	        	});
+	        }
   		}
   	}
 }
