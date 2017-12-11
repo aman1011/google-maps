@@ -58,27 +58,15 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
   			if (place.name == self.markers[i].title) {
   				console.log('reaching in if');
-	  			// Making a marker appear for the current clicked place.
-	  			// Getting the geocode for the place.
-				geocoder.geocode({ 'address': place.address }, function(results, status) {
-	    			if (status == google.maps.GeocoderStatus.OK) {
-	        			marker = new google.maps.Marker({
-	            			map: self.map,
-	            			position: results[0].geometry.location,
-	            			animation: google.maps.Animation.DROP,
-	            			title: place.name,
-	            			address: place.address
-	        			});
-	        		}
+	  			self.markers[i].setVisible(true);
 
-	        		(function (marker, title) {
-	                     google.maps.event.addListener(marker, 'click', function () {
-	                         populateinfoWindow(marker, infoWindow);
-	                     });
-	                 })(marker, place.name);
+        		(function (marker, title) {
+                     google.maps.event.addListener(marker, 'click', function () {
+                         populateinfoWindow(marker, infoWindow);
+                     });
+                 })(marker, place.name);
 
-	                 bounds.extend(marker.position);
-	        	});
+                 bounds.extend(self.markers[i].position);
 	        }
   		}
   	}
