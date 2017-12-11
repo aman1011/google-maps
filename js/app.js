@@ -26,7 +26,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
         		(function (marker, title) {
                      google.maps.event.addListener(marker, 'click', function () {
-                         populateInfoWindow(marker, infoWindow);
+                         populateinfoWindow(marker, infoWindow);
                      });
                  })(marker, title);
 
@@ -90,22 +90,52 @@ google.maps.event.addDomListener(window, 'load', function(){
 });
 }
 
-function populateInfoWindow(marker, infowindow) {
+function populateinfoWindow(marker, infoWindow) {
+	console.log(marker.position.lat());
 		       	
-   	// Check to make sure the infowindow is not already opened on this marker.
-    if (infowindow.marker != marker) {
-   		infowindow.marker = marker;
-      	infowindow.setContent('<div id="text">' + marker.title + '</div>' + '<div id="text">' + marker.address + '</div>');
-      	infowindow.open(map, marker);
+   	// Check to make sure the infoWindow is not already opened on this marker.
+    if (infoWindow.marker != marker) {
+   		infoWindow.marker = marker;
+      	infoWindow.setContent('<div id="text">' + marker.title + '</div>' + '<div id="text">' + marker.address + '</div>');
+      	infoWindow.open(map, marker);
 
-      	// Make sure the marker property is cleared if the infowindow is closed.
-      	infowindow.addListener('closeclick',function(){
-        	infowindow.setMarker = null;
+      	// Make sure the marker property is cleared if the infoWindow is closed.
+      	infoWindow.addListener('closeclick',function(){
+        	infoWindow.setMarker = null;
       	});
 
       	// Get the street View for the place.
       	var streetView = new google.maps.StreetViewService();
-      	//streetView.getPanoramaByLocation(marker.position)
+      	var radius = 50;
 
+      	function getStreetView(data, status) {
+
+      		// Check if the status of the google service is OK.
+      		// In case it's ok, then proceed with the panorama view.
+      		if( status == google.maps.StreetViewStatus.OK ) {
+
+      			var nearStreetViewLocation = data.location.latLng;
+      			var heading = google.maps.geometry.spherical.computeHeading(
+      				nearStreetViewLocation, marker.position);
+      			infoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div');
+      			var panoramaOptions = {
+      				position: nearStreetViewLocation,
+      				pov: {
+      					heading: heading,
+      					pitch: 30
+      				}
+      			};
+
+      			var panorama = new google.maps.StreetViewPanorama(
+      				document.getElementById('pano'), panoramaOptions);
+
+      		} else {
+      			infoWindow.setContent('<div>' + marker.title + '</div>' + '<div>No Street View Found</div>');
+      		}
+      	}
+
+      	// Calling the above function with the marker data.
+      	streetView.getPanoramaByLocation(marker.position, radius, getStreetView);
+      	infoWindow.open(map, marker);
     }
 }
