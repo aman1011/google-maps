@@ -7,8 +7,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
 	self.allPlaces = [];
 	self.markers = [];
     myPlaces.forEach(function(place) {
-    	newObj = new Place(place);
-    	title = newObj.name;
+    	var newObj = new Place(place);
+    	var title = newObj.name;
     	console.log(title);
     	// Getting the geocode for the place.
     	var geocoder = new google.maps.Geocoder();
@@ -23,10 +23,12 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
 
         		self.markers.push(marker);
 
-        		console.log(marker.title);
-    			marker.addListener('click', function() {
-		        	populateInfoWindow(this, infoWindow);
-		    	});
+        		(function (marker, title) {
+                     google.maps.event.addListener(marker, 'click', function (e) {
+                         infoWindow.setContent(title);
+                         infoWindow.open(self.map, marker);
+                     });
+                 })(marker, title);
     		}
 		});
 	    self.allPlaces.push(newObj);
