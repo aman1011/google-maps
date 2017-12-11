@@ -70,12 +70,36 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	        }
   		}
   	}
+
+  	// filtering places
+  	self.userInput = ko.observable('');
+  	this.searchedPlace = function() {
+
+  		// clearing all markers.
+  		self.clearAllMarkers();
+  		self.allPlaces = [];
+
+  		for (var i = 0; i < self.markers.length; i++) {
+
+  			// check if its a substring.
+  			if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
+
+  				// Showing markers.
+  				self.markers[i].setVisible(true);
+  				self.allPlaces.push({name: self.markers[i].title});
+  				console.log(self.userInput()) ;
+  			}
+  		}
+
+  		// Modifying allPlaces.
+
+
+  	}
 }
 
 var Place = function(data) {
 	this.name = data.name;
 	this.address = data.address;
-
 }
 
 var createMap = function () {
