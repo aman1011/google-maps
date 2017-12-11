@@ -8,7 +8,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
 	self.markers = [];
     myPlaces.forEach(function(place) {
     	newObj = new Place(place);
-
+    	title = newObj.name;
+    	console.log(title);
     	// Getting the geocode for the place.
     	var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({ 'address': place.address }, function(results, status) {
@@ -17,15 +18,15 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
             		map: self.map,
             		position: results[0].geometry.location,
             		animation: google.maps.Animation.DROP,
-            		title: newObj.name
+            		title: title
         		});
 
         		self.markers.push(marker);
 
-        		// Adding event listener to create a infowindow.
-        		marker.addListener('click', function() {
-			        populateInfoWindow(this, infoWindow);
-			    });
+        		console.log(marker.title);
+    			marker.addListener('click', function() {
+		        	populateInfoWindow(this, infoWindow);
+		    	});
     		}
 		});
 	    self.allPlaces.push(newObj);
@@ -34,9 +35,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
 
 var Place = function(data) {
 	this.name = data.name;
-	this.latlng = null;
 	this.address = data.address;
-	this.marker = null;
+
 }
 
 var createMap = function () {
