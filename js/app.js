@@ -4,7 +4,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	var self = this;
 
 	self.map = googleMap;
-	self.allPlaces = [];
+	this.allPlaces = ko.observableArray([]);
 	self.markers = [];
     myPlaces.forEach(function(place) {
     	var newObj = new Place(place);
@@ -35,6 +35,13 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 		});
 	    self.allPlaces.push(newObj);
   	});
+
+  	// function to set the current place.
+  	//self.setCurrentPlace() = function(place) {
+
+  	//}
+
+
 }
 
 var Place = function(data) {

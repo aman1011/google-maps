@@ -36,7 +36,8 @@ h1 {
 	padding: 10px 10px 30px 10 px;
 	text-align: left;
 	width: 340px;
-	background-color: white;
+	background-color: black;
+	color: white;
 }
 
 #pano {
@@ -63,5 +64,12 @@ h1 {
 	width: 27%;
     position: relative;
     margin-left: 10px;
+}
+
+.pubs {
+	width: 100%;
+	margin-left: 0%;
+	background-color: black;
+	color: white;
 }
 
