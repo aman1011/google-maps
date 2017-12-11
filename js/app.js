@@ -18,7 +18,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
             		map: self.map,
             		position: results[0].geometry.location,
             		animation: google.maps.Animation.DROP,
-            		title: title
+            		title: title,
+            		address: newObj.address
         		});
 
         		self.markers.push(marker);
@@ -94,12 +95,17 @@ function populateInfoWindow(marker, infowindow) {
    	// Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
    		infowindow.marker = marker;
-      	infowindow.setContent('<div>' + marker.title + '</div>');
+      	infowindow.setContent('<div id="text">' + marker.title + '</div>' + '<div id="text">' + marker.address + '</div>');
       	infowindow.open(map, marker);
 
       	// Make sure the marker property is cleared if the infowindow is closed.
       	infowindow.addListener('closeclick',function(){
         	infowindow.setMarker = null;
       	});
+
+      	// Get the street View for the place.
+      	var streetView = new google.maps.StreetViewService();
+      	//streetView.getPanoramaByLocation(marker.position)
+
     }
 }
