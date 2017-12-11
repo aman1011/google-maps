@@ -1,10 +1,11 @@
 
-var ViewModel = function (googleMap, myPlaces) {
+var ViewModel = function (googleMap, myPlaces, infoWindow) {
 
 	var self = this;
 
 	self.map = googleMap;
-	self.placeList = [];
+	self.allPlaces = [];
+	self.markers = [];
     myPlaces.forEach(function(place) {
     	newObj = new Place(place);
 
@@ -12,14 +13,22 @@ var ViewModel = function (googleMap, myPlaces) {
     	var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({ 'address': place.address }, function(results, status) {
     		if (status == google.maps.GeocoderStatus.OK) {
-        		newObj.marker = new google.maps.Marker({
+        		marker = new google.maps.Marker({
             		map: self.map,
             		position: results[0].geometry.location,
-            		animation: google.maps.Animation.DROP
+            		animation: google.maps.Animation.DROP,
+            		title: newObj.name
         		});
+
+        		self.markers.push(marker);
+
+        		// Adding event listener to create a infowindow.
+        		marker.addListener('click', function() {
+			        populateInfoWindow(this, infoWindow);
+			    });
     		}
 		});
-	    self.placeList.push(new Place(place));
+	    self.allPlaces.push(newObj);
   	});
 }
 
@@ -71,6 +80,22 @@ google.maps.event.addDomListener(window, 'load', function(){
 	}
 	];
 	var googleMap = createMap();
-	ko.applyBindings(new ViewModel(googleMap, myPlaces))
+	var infoWindow = new google.maps.InfoWindow();
+	ko.applyBindings(new ViewModel(googleMap, myPlaces, infoWindow))
 });
+}
+
+function populateInfoWindow(marker, infowindow) {
+		       	
+   	// Check to make sure the infowindow is not already opened on this marker.
+    if (infowindow.marker != marker) {
+   		infowindow.marker = marker;
+      	infowindow.setContent('<div>' + marker.title + '</div>');
+      	infowindow.open(map, marker);
+
+      	// Make sure the marker property is cleared if the infowindow is closed.
+      	infowindow.addListener('closeclick',function(){
+        	infowindow.setMarker = null;
+      	});
+    }
 }
