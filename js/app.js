@@ -1,5 +1,5 @@
 
-var ViewModel = function (googleMap, myPlaces, infoWindow) {
+var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 	var self = this;
 
@@ -9,7 +9,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
     myPlaces.forEach(function(place) {
     	var newObj = new Place(place);
     	var title = newObj.name;
-    	console.log(title);
+
     	// Getting the geocode for the place.
     	var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({ 'address': place.address }, function(results, status) {
@@ -24,11 +24,12 @@ var ViewModel = function (googleMap, myPlaces, infoWindow) {
         		self.markers.push(marker);
 
         		(function (marker, title) {
-                     google.maps.event.addListener(marker, 'click', function (e) {
-                         infoWindow.setContent(title);
-                         infoWindow.open(self.map, marker);
+                     google.maps.event.addListener(marker, 'click', function () {
+                         populateInfoWindow(marker, infoWindow);
                      });
                  })(marker, title);
+
+                 bounds.extend(marker.position);
     		}
 		});
 	    self.allPlaces.push(newObj);
@@ -49,7 +50,7 @@ var createMap = function () {
     map = new google.maps.Map(document.getElementById('map'), {
     	center: {lat: 53.4308294, lng: -2.96083},
     	mapTypeControl: false,
-        zoom: 13
+        zoom: 15
     });
 
     return map;
@@ -83,7 +84,8 @@ google.maps.event.addDomListener(window, 'load', function(){
 	];
 	var googleMap = createMap();
 	var infoWindow = new google.maps.InfoWindow();
-	ko.applyBindings(new ViewModel(googleMap, myPlaces, infoWindow))
+	var bounds = new google.maps.LatLngBounds();
+	ko.applyBindings(new ViewModel(googleMap, myPlaces, infoWindow, bounds))
 });
 }
 
