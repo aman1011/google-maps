@@ -28,6 +28,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
                      google.maps.event.addListener(marker, 'click', function () {
                      	infoWindow.close();
                          populateinfoWindow(marker, infoWindow);
+                         timeInfo(marker, infoWindow);
                      });
                  })(marker, title);
 
@@ -168,7 +169,7 @@ function populateinfoWindow(marker, infoWindow) {
       			var nearStreetViewLocation = data.location.latLng;
       			var heading = google.maps.geometry.spherical.computeHeading(
       				nearStreetViewLocation, marker.position);
-      			infoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div');
+      			infoWindow.setContent( '<div>'+ marker.title + '<div id="pano"></div');
       			var panoramaOptions = {
       				position: nearStreetViewLocation,
       				pov: {
@@ -190,3 +191,86 @@ function populateinfoWindow(marker, infoWindow) {
       	infoWindow.open(map, marker);
     }
 }
+
+function timeInfo(marker, infoWindow) {
+
+	var $timeElement = $('#fourSquare');
+	$timeElement.text("");
+	// Making the ajax call to get the information from the 
+	// four square to get the venue id, which will be later used	
+    var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
+    $.ajax({
+    	url: request_url,
+    	success: function (data) {
+    		console.log(data.response.venues[0]);
+    		var venues = data.response.venues;
+    		for (var i = 0; i < venues.length; i++) {
+    			if (marker.title == venues[i].name) {
+    				// we have reached in our pub.
+    				// Now remains to find the open and close time
+    				// This will be done via another ajax call to 
+    				// another four square API.
+    				timeUrl = 'https://api.foursquare.com/v2/venues/' + venues[i].id + '/hours?client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
+    				$.ajax({
+    				 	url: timeUrl,
+    				 	success: function (data) {
+    				 		var timeFrames = data.response.popular.timeframes;
+    				 		var timeContent = '';
+    				 		$timeElement.append('<h1> Open Timings </h1>')
+    				 		for (var j = 0; j < timeFrames.length; j++) {
+
+    				 			// Adding the full address.
+    				 			// creating a switch case.
+    				 			var textDay;
+    				 			switch(timeFrames[j].days[0]) {
+    				 				case (1):
+    				 					textDay = 'Monday';
+    				 				break;
+
+    				 				case 2:
+    				 					textDay = 'Tuesday';
+    				 				break;
+
+    				 				case 3:
+    				 					textDay = 'Wednesday';
+    				 				break;
+
+    				 				case 4:
+    				 					textDay = 'Thursday';
+    				 				break;
+
+    				 				case 5:
+    				 					textDay = 'Friday';
+    				 				break;
+
+    				 				case 6:
+    				 					textDay = 'Saturday';
+    				 				break;
+
+    				 				case 7:
+    				 					textDay = 'Sunday';
+    				 				break;
+    				 				default: 'Weird day';
+    				 			}
+
+    				 			var openHours = textDay+ ': ';
+    				 			for (var k = 0; k < timeFrames[j].open.length; k++) {
+    				 				openHours += timeFrames[j].open[k].start + ' - ' + timeFrames[j].open[k].end + ', ';
+
+    				 				//Removing the + character representing AM.
+    				 				openHours = openHours.replace('+', '');
+    				 			}
+    				 			$timeElement.append(openHours + "<br>");
+    				 		}
+
+    				 		// Open time information for the place at marker.
+    				 		console.log(timeContent);
+    				 		//$timeElement.append(timeContent);
+    				 	}
+    				});
+    			}
+    		}
+    	}
+    });
+}
+

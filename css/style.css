@@ -74,3 +74,12 @@ h1 {
 	font-family: Arial;
 }
 
+#fourSquare {
+	width: 80%;
+	margin-left: 2%;
+	background-color: black;
+	color: white;
+	font-family: Arial;
+	font-size: 80%;
+}
+
