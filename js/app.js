@@ -61,6 +61,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
         			infoWindow.close();
                      google.maps.event.addListener(marker, 'click', function () {
                         populateinfoWindow(marker, infoWindow);
+                        timeInfo(marker, infoWindow);
                      });
                  })(marker, place.name);
 
