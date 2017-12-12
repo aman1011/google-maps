@@ -53,11 +53,9 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
   	this.setCurrentPlace = function(place) {
   		//debugger;
   		self.clearAllMarkers();
-  		console.log('cleared all');
   		for( var i = 0; i < self.markers.length; i++) {
 
   			if (place.name == self.markers[i].title) {
-  				console.log('reaching in if');
 	  			self.markers[i].setVisible(true);
 
         		(function (marker, title) {
@@ -77,7 +75,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
   		// clearing all markers.
   		self.clearAllMarkers();
-  		self.allPlaces = [];
+  		self.allPlaces.removeAll();
 
   		for (var i = 0; i < self.markers.length; i++) {
 
@@ -85,15 +83,10 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
   			if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
 
   				// Showing markers.
+  				self.allPlaces.push(new Place({name: self.markers[i].title, address: self.markers[i].address}));
   				self.markers[i].setVisible(true);
-  				self.allPlaces.push({name: self.markers[i].title});
-  				console.log(self.userInput()) ;
   			}
   		}
-
-  		// Modifying allPlaces.
-
-
   	}
 }
 
