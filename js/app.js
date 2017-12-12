@@ -196,6 +196,7 @@ function timeInfo(marker, infoWindow) {
 
 	var $timeElement = $('#fourSquare');
 	$timeElement.text("");
+	var foundFlag = false;
 
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
@@ -204,13 +205,11 @@ function timeInfo(marker, infoWindow) {
     $.ajax({
     	url: request_url,
     	success: function (data) {
-    		console.log(data.meta.code);
-    		console.log(data.response.venues[0]);
     		var venues = data.response.venues;
-    		var foundFlag = false;
     		for (var i = 0; i < venues.length; i++) {
-    			if (marker.title == venues[i].name) {
-    				var flag = true;
+    			if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
+
+    				var foundFlag = true;
     				// we have reached in our pub.
     				// Now remains to find the open and close time
     				// This will be done via another ajax call to 
@@ -221,70 +220,68 @@ function timeInfo(marker, infoWindow) {
     				 	success: function (data) {
     				 		var timeFrames = data.response.popular.timeframes;
     				 		var timeContent = '';
-    				 		
-    				 		for (var j = 0; j < timeFrames.length; j++) {
+    				 		if( timeFrames ) {
 
-    				 			// Adding the full address.
-    				 			// creating a switch case.
-    				 			var textDay;
-    				 			switch(timeFrames[j].days[0]) {
-    				 				case (1):
-    				 					textDay = 'Monday';
-    				 				break;
+	    				 		for (var j = 0; j < timeFrames.length; j++) {
 
-    				 				case 2:
-    				 					textDay = 'Tuesday';
-    				 				break;
+	    				 			// Adding the full address.
+	    				 			// creating a switch case.
+	    				 			var textDay;
+	    				 			switch(timeFrames[j].days[0]) {
+	    				 				case (1):
+	    				 					textDay = 'Monday';
+	    				 				break;
 
-    				 				case 3:
-    				 					textDay = 'Wednesday';
-    				 				break;
+	    				 				case 2:
+	    				 					textDay = 'Tuesday';
+	    				 				break;
 
-    				 				case 4:
-    				 					textDay = 'Thursday';
-    				 				break;
+	    				 				case 3:
+	    				 					textDay = 'Wednesday';
+	    				 				break;
 
-    				 				case 5:
-    				 					textDay = 'Friday';
-    				 				break;
+	    				 				case 4:
+	    				 					textDay = 'Thursday';
+	    				 				break;
 
-    				 				case 6:
-    				 					textDay = 'Saturday';
-    				 				break;
+	    				 				case 5:
+	    				 					textDay = 'Friday';
+	    				 				break;
 
-    				 				case 7:
-    				 					textDay = 'Sunday';
-    				 				break;
-    				 				default: 'Weird day';
-    				 			}
+	    				 				case 6:
+	    				 					textDay = 'Saturday';
+	    				 				break;
 
-    				 			var openHours = textDay+ ': ';
-    				 			for (var k = 0; k < timeFrames[j].open.length; k++) {
-    				 				openHours += timeFrames[j].open[k].start + ' - ' + timeFrames[j].open[k].end + ', ';
+	    				 				case 7:
+	    				 					textDay = 'Sunday';
+	    				 				break;
+	    				 				default: 'Weird day';
+	    				 			}
 
-    				 				//Removing the + character representing AM.
-    				 				openHours = openHours.replace('+', '');
-    				 			}
-    				 			$timeElement.append(openHours + "<br>");
-    				 		}
+	    				 			var openHours = textDay+ ': ';
+	    				 			for (var k = 0; k < timeFrames[j].open.length; k++) {
+	    				 				openHours += timeFrames[j].open[k].start + ' - ' + timeFrames[j].open[k].end + ', ';
 
-    				 		// Open time information for the place at marker.
-    				 		console.log(timeContent);
-    				 		//$timeElement.append(timeContent);
+	    				 				//Removing the + character representing AM.
+	    				 				openHours = openHours.replace('+', '');
+	    				 			}
+	    				 			$timeElement.append(openHours + "<br>");
+	    				 		}
+	    				 	}
     				 	},
     				 	error: function (e) {
-    				 		$timeElement.append('Could not find timing for the resturant through fourSquare');
+    				 		$timeElement.append('Could not find timing for the resturant through fourSquare' + "\n");
     				 	}
     				});
     				break;
     			} 
     		}
     		if (!foundFlag) {
-    			$timeElement.append('Could not find the restaurant via fourSquare API');
+    			$timeElement.append('Could not find the restaurant via fourSquare API' + "\n");
     		}
     	},
     	error: function(e) {
-    		$timeElement.append('Could not find the restaurant via fourSquare API below');
+    		$timeElement.append('Could not find the restaurant via fourSquare API' + + "\n");
     	}
     });
 }
