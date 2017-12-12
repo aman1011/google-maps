@@ -38,15 +38,20 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
   	// function to set the current place.
   	this.clearAllMarkers = function() {
+  		console.log(self.markers.length);
+  		console.log('reaching here');
   		for( var i = 0; i < self.markers.length; i++) {
-  			
+  			//debugger;
+  			// console.log(self.markers[i]);
   			// Making all markers disappear
   			self.markers[i].setVisible(false);
+  			//debugger;
   		}
+  		//debugger;
   	}
 
   	this.setCurrentPlace = function(place) {
-
+  		//debugger;
   		self.clearAllMarkers();
   		for( var i = 0; i < self.markers.length; i++) {
 
@@ -138,6 +143,7 @@ google.maps.event.addDomListener(window, 'load', function(){
 }
 
 function populateinfoWindow(marker, infoWindow) {
+	console.log(marker.position.lat());
 		       	
    	// Check to make sure the infoWindow is not already opened on this marker.
     if (infoWindow.marker != marker) {
@@ -183,20 +189,5 @@ function populateinfoWindow(marker, infoWindow) {
       	// Calling the above function with the marker data.
       	streetView.getPanoramaByLocation(marker.position, radius, getStreetView);
       	infoWindow.open(map, marker);
-
-      	// Making the ajax call from foursquare to get the open time
-      	// of the pub.
-      	console.log(marker.position.lat());
-        var request_url = 'https://api.foursquare.com/v2/venues/search?ll=53.4301536,-2.9625996&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127'
-        $.ajax({
-        	url: request_url,
-        	dataType: 'jsonp',
-        	success: function(response) {
-        		console.log('success');
-        	}
-        }).fail(function(e) {
-        	console.log('failed');
-        });
-
     }
 }
