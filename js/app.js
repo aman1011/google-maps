@@ -6,6 +6,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.map = googleMap;
 	this.allPlaces = ko.observableArray([]);
 	this.markers = [];
+	this.infoWindow = infoWindow;
 	var geocoder = new google.maps.Geocoder();
     myPlaces.forEach(function(place) {
     	var newObj = new Place(place);
@@ -26,7 +27,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
         		(function (marker, title) {
                      google.maps.event.addListener(marker, 'click', function () {
-                         populateinfoWindow(marker, infoWindow);
+                         populateinfoWindow(marker, self.infoWindow);
                      });
                  })(marker, title);
 
@@ -55,7 +56,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
         		(function (marker, title) {
                      google.maps.event.addListener(marker, 'click', function () {
-                         populateinfoWindow(marker, infoWindow);
+                         populateinfoWindow(marker, self.infoWindow);
                      });
                  })(marker, place.name);
 
@@ -141,6 +142,7 @@ function populateinfoWindow(marker, infoWindow) {
 		       	
    	// Check to make sure the infoWindow is not already opened on this marker.
     if (infoWindow.marker != marker) {
+    	
    		infoWindow.marker = marker;
       	infoWindow.setContent('<div id="text">' + marker.title + '</div>' + '<div id="text">' + marker.address + '</div>');
       	infoWindow.open(map, marker);
@@ -148,6 +150,7 @@ function populateinfoWindow(marker, infoWindow) {
       	// Make sure the marker property is cleared if the infoWindow is closed.
       	infoWindow.addListener('closeclick',function(){
         	infoWindow.setMarker = null;
+        	infoWindow.marker = null;
       	});
 
       	// Get the street View for the place.
@@ -183,20 +186,5 @@ function populateinfoWindow(marker, infoWindow) {
       	// Calling the above function with the marker data.
       	streetView.getPanoramaByLocation(marker.position, radius, getStreetView);
       	infoWindow.open(map, marker);
-
-      	// Making the ajax call from foursquare to get the open time
-      	// of the pub.
-      	console.log(marker.position.lat());
-        var request_url = 'https://api.foursquare.com/v2/venues/search?ll=53.4301536,-2.9625996&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127'
-        $.ajax({
-        	url: request_url,
-        	dataType: 'jsonp',
-        	success: function(response) {
-        		console.log('success');
-        	}
-        }).fail(function(e) {
-        	console.log('failed');
-        });
-
     }
 }
