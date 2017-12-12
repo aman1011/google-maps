@@ -196,16 +196,21 @@ function timeInfo(marker, infoWindow) {
 
 	var $timeElement = $('#fourSquare');
 	$timeElement.text("");
+
 	// Making the ajax call to get the information from the 
-	// four square to get the venue id, which will be later used	
+	// four square to get the venue id, which will be later used
+	$timeElement.append('<h1> Open Timings </h1>')	
     var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
     $.ajax({
     	url: request_url,
     	success: function (data) {
+    		console.log(data.meta.code);
     		console.log(data.response.venues[0]);
     		var venues = data.response.venues;
+    		var foundFlag = false;
     		for (var i = 0; i < venues.length; i++) {
     			if (marker.title == venues[i].name) {
+    				var flag = true;
     				// we have reached in our pub.
     				// Now remains to find the open and close time
     				// This will be done via another ajax call to 
@@ -216,7 +221,7 @@ function timeInfo(marker, infoWindow) {
     				 	success: function (data) {
     				 		var timeFrames = data.response.popular.timeframes;
     				 		var timeContent = '';
-    				 		$timeElement.append('<h1> Open Timings </h1>')
+    				 		
     				 		for (var j = 0; j < timeFrames.length; j++) {
 
     				 			// Adding the full address.
@@ -266,10 +271,20 @@ function timeInfo(marker, infoWindow) {
     				 		// Open time information for the place at marker.
     				 		console.log(timeContent);
     				 		//$timeElement.append(timeContent);
+    				 	},
+    				 	error: function (e) {
+    				 		$timeElement.append('Could not find timing for the resturant through fourSquare');
     				 	}
     				});
-    			}
+    				break;
+    			} 
     		}
+    		if (!foundFlag) {
+    			$timeElement.append('Could not find the restaurant via fourSquare API');
+    		}
+    	},
+    	error: function(e) {
+    		$timeElement.append('Could not find the restaurant via fourSquare API below');
     	}
     });
 }
