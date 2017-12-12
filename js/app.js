@@ -192,19 +192,7 @@ function populateinfoWindow(marker, infoWindow) {
         	url: request_url,
         	dataType: 'jsonp',
         	success: function(response) {
-
-        		// Matching the title of the marker with the 
-        		// venue name and thus getting the result.
-        		var venues = response.response.venues;
-        		for (var i = 0; i < venues.length; i++) {
-        			if (venues[i].name == marker.title) {
-        				console.log(venues[i].name);
-        				console.log(venues[i].id);
-
-        				// Make another request from the four squares api.
-        				break;
-        			}
-        		}
+        		console.log('success');
         	}
         }).fail(function(e) {
         	console.log('failed');
