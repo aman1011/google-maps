@@ -26,6 +26,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
         		(function (marker, title) {
                      google.maps.event.addListener(marker, 'click', function () {
+                     	infoWindow.close();
                          populateinfoWindow(marker, infoWindow);
                      });
                  })(marker, title);
@@ -38,11 +39,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
   	// function to set the current place.
   	this.clearAllMarkers = function() {
-  		console.log(self.markers.length);
-  		console.log('reaching here');
   		for( var i = 0; i < self.markers.length; i++) {
-  			//debugger;
-  			// console.log(self.markers[i]);
+
   			// Making all markers disappear
   			self.markers[i].setVisible(false);
   			//debugger;
@@ -59,8 +57,9 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	  			self.markers[i].setVisible(true);
 
         		(function (marker, title) {
+        			infoWindow.close();
                      google.maps.event.addListener(marker, 'click', function () {
-                         populateinfoWindow(marker, infoWindow);
+                        populateinfoWindow(marker, infoWindow);
                      });
                  })(marker, place.name);
 
@@ -143,7 +142,6 @@ google.maps.event.addDomListener(window, 'load', function(){
 }
 
 function populateinfoWindow(marker, infoWindow) {
-	console.log(marker.position.lat());
 		       	
    	// Check to make sure the infoWindow is not already opened on this marker.
     if (infoWindow.marker != marker) {
@@ -154,6 +152,7 @@ function populateinfoWindow(marker, infoWindow) {
       	// Make sure the marker property is cleared if the infoWindow is closed.
       	infoWindow.addListener('closeclick',function(){
         	infoWindow.setMarker = null;
+        	infoWindow.marker = null;
       	});
 
       	// Get the street View for the place.
