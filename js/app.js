@@ -6,7 +6,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.map = googleMap;
 	this.allPlaces = ko.observableArray([]);
 	this.markers = [];
-	this.timeInfo = ko.observable('Default');
+	this.timeInfoHeading = ko.observable('');
+	this.timeInfo = ko.observable('default');
 	var geocoder = new google.maps.Geocoder();
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
@@ -55,6 +56,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.setCurrentPlace = function(place) {
 		for( var i = 0; i < self.markers.length; i++) {
 
+			// Clearing away the existing bouncing animation.
+			self.markers[i].setAnimation(null);
 			if (place.name == self.markers[i].title) {
 				self.markers[i].setVisible(true);
 				toggleBounce(self.markers[i]);
@@ -63,8 +66,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 					 google.maps.event.addListener(marker, 'click', function () {
 					 	toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
-						timeInfoInformation(self);
-						console.log()
+						timeInformation(self);
 					 });
 				 })(marker, place.name);
 
@@ -150,6 +152,7 @@ google.maps.event.addDomListener(window, 'load', function(){
 
 function populateinfoWindow(marker, infoWindow) {
 				
+				console.log('reach here');
 	// Check to make sure the infoWindow is not already opened on this marker.
 	if (infoWindow.marker != marker) {
 		infoWindow.marker = marker;
@@ -160,6 +163,7 @@ function populateinfoWindow(marker, infoWindow) {
 		infoWindow.addListener('closeclick',function(){
 			infoWindow.setMarker = null;
 			infoWindow.marker = null;
+
 		});
 
 		// Get the street View for the place.
@@ -199,12 +203,10 @@ function populateinfoWindow(marker, infoWindow) {
 }
 
 function timeInformation(viewModel) {
-	console.log(viewModel);
 	var foundFlag = false;
 
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
-	viewModel.timeInfo('<h1> Open Timings </h1>') ;
 	var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
 	$.ajax({
 		url: request_url,
@@ -214,6 +216,7 @@ function timeInformation(viewModel) {
 				if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
 
 					var foundFlag = true;
+					viewModel.timeInfoHeading('Open Timings');
 					// we have reached in our pub.
 					// Now remains to find the open and close time
 					// This will be done via another ajax call to 
@@ -225,7 +228,6 @@ function timeInformation(viewModel) {
 							var timeFrames = data.response.popular.timeframes;
 							var timeContent = '';
 							if( timeFrames ) {
-
 								for (var j = 0; j < timeFrames.length; j++) {
 
 									// Adding the full address.
@@ -269,9 +271,11 @@ function timeInformation(viewModel) {
 										//Removing the + character representing AM.
 										openHours = openHours.replace('+', '');
 									}
-									timeContent += openHours + "<br>";
+									timeContent += openHours;
+									timeContent += '\n';
 								}
 								viewModel.timeInfo(timeContent);
+								console.log(viewModel.timeContent);
 							}
 						},
 						error: function (e) {
@@ -293,7 +297,6 @@ function timeInformation(viewModel) {
 
 
 function toggleBounce(marker) {
-	console.log('reached' + marker.getAnimation())
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
   } else {
