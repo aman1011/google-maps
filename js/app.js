@@ -14,6 +14,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
 		var title = newObj.name;
+		var errorFlag = false;
 
 		// Getting the geocode for the place.
 		geocoder.geocode({ 'address': place.address }, function(results, status) {
@@ -39,11 +40,16 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 				bounds.extend(marker.position);
 			} else {
-				alert('The google geocoder API failed to get the map info.Please try again in some time !!');
+				errorFlag = true;
+				break;
 			}
 		});
 		self.allPlaces.push(newObj);
 	});
+
+	if (errorFlag) {
+		alert('Geo code was not able to get data for all places');
+	}
 
 	// function to set the current place.
 	this.clearAllMarkers = function() {
@@ -62,6 +68,9 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 			if (place.name == self.markers[i].title) {
 				self.markers[i].setVisible(true);
 				toggleBounce(self.markers[i]);
+
+				// opening infoWindow.
+				populateinfoWindow(marker, infoWindow);
 				(function (marker, title) {
 					infoWindow.close();
 					 google.maps.event.addListener(marker, 'click', function () {
