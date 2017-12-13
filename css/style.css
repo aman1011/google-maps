@@ -15,6 +15,12 @@ h1 {
 	text-align: center;
 }
 
+h3 {
+	color: #525454;
+	font-size: 18px;
+	text-align: center;
+}
+
 #hide-listings,
 #show-listings {
 	width: 48%;
@@ -75,11 +81,11 @@ h1 {
 }
 
 #fourSquare {
-	width: 80%;
 	margin-left: 2%;
 	background-color: black;
 	color: white;
 	font-family: Arial;
-	font-size: 80%;
+	font-size: 70%;
+	position: relative;
 }
 

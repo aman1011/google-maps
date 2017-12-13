@@ -7,7 +7,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.allPlaces = ko.observableArray([]);
 	this.markers = [];
 	this.timeInfoHeading = ko.observable('');
-	this.timeInfo = ko.observable('default');
+	this.timeInfo = ko.observableArray([]);
 	var geocoder = new google.maps.Geocoder();
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
@@ -204,6 +204,8 @@ function populateinfoWindow(marker, infoWindow) {
 function timeInformation(viewModel) {
 	var foundFlag = false;
 
+	// Resetting the time information.
+	viewModel.timeInfo.removeAll();
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
 	var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
@@ -270,12 +272,10 @@ function timeInformation(viewModel) {
 										//Removing the + character representing AM.
 										openHours = openHours.replace('+', '');
 									}
-									timeContent += openHours;
-									timeContent += '\n';
+
+									viewModel.timeInfo.push({day: openHours});
+
 								}
-								console.log(timeContent);
-								viewModel.timeInfo(timeContent);
-								console.log(viewModel.timeContent);
 							}
 						},
 						error: function (e) {

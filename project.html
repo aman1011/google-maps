@@ -17,12 +17,16 @@
 				<hr>
 				<div>
 					<ul data-bind='foreach: allPlaces'>
-						<li class="pubs" data-bind='text: name, click: $parent.setCurrentPlace'></li>
+						<div class="pubs" data-bind='text: name, click: $parent.setCurrentPlace'></div>
 					</ul>
 				</div>
 				<hr>
-				<h1 data-bind='text: timeInfoHeading'></h1>
-				<div id='fourSquare' data-bind='text: timeInfo'></div>
+				<h3 data-bind='text: timeInfoHeading'></h3>
+				<div id='fourSquare'>
+					<ul data-bind='foreach: timeInfo'>
+						<li data-bind='text: day'></li>
+					</ul>
+				</div>
 			</div>
 			<div id='map'>
 			</div>
