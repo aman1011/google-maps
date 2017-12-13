@@ -27,12 +27,14 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
         		(function (marker, title) {
                      google.maps.event.addListener(marker, 'click', function () {
                      	infoWindow.close();
-                         populateinfoWindow(marker, infoWindow);
-                         timeInfo(marker, infoWindow);
+                        populateinfoWindow(marker, infoWindow);
+                        timeInfo(marker, infoWindow);
                      });
-                 })(marker, title);
+                })(marker, title);
 
-                 bounds.extend(marker.position);
+                bounds.extend(marker.position);
+    		} else {
+    			alert('The google geocoder API failed to get the map info.Please try again in some time !!').
     		}
 		});
 	    self.allPlaces.push(newObj);
