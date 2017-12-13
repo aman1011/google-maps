@@ -112,13 +112,15 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 					//Iterate through allPlaces and push the one 
 					// with the name as marker title in visible places.
 					for (var j = 0; j < self.allPlaces().length; j++) {
+						console.log('the place name: ' + self.allPlaces()[j].name)
 						if (self.markers[i].title == self.allPlaces()[j].name) {
+							console.log('pushing here');
 							self.visiblePlaces.push(self.allPlaces()[j]);
-							break;
+							//break;
 						}
 						
-					self.markers[i].setVisible(true);
-					console.log(self.visiblePlaces().length);
+						self.markers[i].setVisible(true);
+						console.log(self.visiblePlaces().length);
 					}
 				}
 			}
