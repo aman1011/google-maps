@@ -273,6 +273,7 @@ function timeInformation(viewModel) {
 									timeContent += openHours;
 									timeContent += '\n';
 								}
+								console.log(timeContent);
 								viewModel.timeInfo(timeContent);
 								console.log(viewModel.timeContent);
 							}
