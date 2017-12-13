@@ -6,6 +6,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.map = googleMap;
 	this.allPlaces = ko.observableArray([]);
 	this.markers = [];
+	this.timeInfo = ko.observable('Default');
 	var geocoder = new google.maps.Geocoder();
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
@@ -30,7 +31,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 						infoWindow.close();
 						toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
-						timeInfo(marker, infoWindow);
+						timeInformation(self);
 					 });
 				})(marker, title);
 
@@ -62,7 +63,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 					 google.maps.event.addListener(marker, 'click', function () {
 					 	toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
-						timeInfo(marker, infoWindow);
+						timeInfoInformation(self);
+						console.log()
 					 });
 				 })(marker, place.name);
 
@@ -90,6 +92,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 			}
 		}
 	}
+
+	// getting time info as a KO Observable.
 }
 
 var Place = function(data) {
@@ -194,15 +198,13 @@ function populateinfoWindow(marker, infoWindow) {
 	}
 }
 
-function timeInfo(marker, infoWindow) {
-
-	var $timeElement = $('#fourSquare');
-	$timeElement.text("");
+function timeInformation(viewModel) {
+	console.log(viewModel);
 	var foundFlag = false;
 
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
-	$timeElement.append('<h1> Open Timings </h1>')	
+	viewModel.timeInfo('<h1> Open Timings </h1>') ;
 	var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
 	$.ajax({
 		url: request_url,
@@ -267,23 +269,24 @@ function timeInfo(marker, infoWindow) {
 										//Removing the + character representing AM.
 										openHours = openHours.replace('+', '');
 									}
-									$timeElement.append(openHours + "<br>");
+									timeContent += openHours + "<br>";
 								}
+								viewModel.timeInfo(timeContent);
 							}
 						},
 						error: function (e) {
-							$timeElement.append('Could not find timing for the resturant through fourSquare' + "\n");
+							viewModel.timeInfo('Could not find timing for the resturant through fourSquare' + "\n");
 						}
 					});
 					break;
 				} 
 			}
 			if (!foundFlag) {
-				$timeElement.append('Could not find the restaurant via fourSquare API' + "\n");
+				viewModel.timeInfo('Could not find the restaurant via fourSquare API' + "\n");
 			}
 		},
 		error: function(e) {
-			$timeElement.append('Could not find the restaurant via fourSquare API' + + "\n");
+			viewModel.timeInfo('Could not find the restaurant via fourSquare API' + + "\n");
 		}
 	});
 }
