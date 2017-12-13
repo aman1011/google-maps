@@ -11,9 +11,10 @@
 				<h1>Liverpool Pubs and Bars - Anfield</h1>
 				<hr>
 				<div>
-					<input data-bind='value: userInput' id="filter-area" type="text" placeholder="Enter your favorite Pub">
-					<input data-bind='click: searchedPlace' id="filter-button" type='button' value="Filter">
+					<textarea data-bind='textInput: userInput, keypress:searchedPlace' id="filter-area" type="text" placeholder="Enter your favorite Pub"></textarea>
+					<input id="filter-button" type='button' value="Filter">
 				</div>
+				<div data-bind='text: userInput'></div>
 				<hr>
 				<div>
 					<ul data-bind='foreach: allPlaces'>
