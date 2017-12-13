@@ -8,7 +8,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.markers = [];
 	this.timeInfoHeading = ko.observable('');
 	this.timeInfo = ko.observableArray([]);
-	this.userInput = ko.observable();
+	this.userInput = ko.observable('');
 	var geocoder = new google.maps.Geocoder();
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
@@ -76,12 +76,13 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	}
 
 	// filtering places
+	console.log(self.allPlaces()[0].name);
 	
 	this.searchedPlace = ko.computed(function() {
+		console.log('reaching in computed search place');
 		console.log(self.userInput());
 		// clearing all markers.
 		self.clearAllMarkers();
-		self.allPlaces.removeAll();
 
 		for (var i = 0; i < self.markers.length; i++) {
 
