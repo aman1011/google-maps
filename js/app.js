@@ -9,6 +9,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.timeInfoHeading = ko.observable('');
 	this.timeInfo = ko.observableArray([]);
 	this.userInput = ko.observable('');
+	this.visiblePlaces = ko.observableArray([]);
 	var geocoder = new google.maps.Geocoder();
 	myPlaces.forEach(function(place) {
 		var newObj = new Place(place);
@@ -44,6 +45,11 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 		self.allPlaces.push(newObj);
 	});
 
+	self.allPlaces.forEach(function(place) {
+    	self.visiblePlaces.push(place);
+  	});
+
+  	
 	// function to set the current place.
 	this.clearAllMarkers = function() {
 		for( var i = 0; i < self.markers.length; i++) {
@@ -81,6 +87,17 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	this.searchedPlace = ko.computed(function() {
 		console.log('reaching in computed search place');
 		console.log(self.userInput());
+		console.log(self.allPlaces()[0].name);
+
+		//
+		self.visiblePlaces([]);
+		for (var i = 0; i < self.allPlaces().length; i++) {
+			self.visiblePlaces.push(self.allPlaces()[i]);
+		}
+
+		console.log('initial name' + self.visiblePlaces()[0].name);
+		console.log('length' + self.visiblePlaces().length);
+
 		// clearing all markers.
 		self.clearAllMarkers();
 
@@ -90,8 +107,16 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 			if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
 
 				// Showing markers.
-				self.allPlaces.push(new Place({name: self.markers[i].title, address: self.markers[i].address}));
-				self.markers[i].setVisible(true);
+				console.log('markertitle ' + self.markers[i].title);
+				for ( var j = 0; j < self.visiblePlaces().length; j++) {
+					console.log('visible place name' + self.visiblePlaces()[j].name);
+					if (self.markers[i].title !== self.visiblePlaces()[j].name) {
+						console.log('reaching in removal');
+						self.visiblePlaces.remove(self.visiblePlaces()[j]);
+					}
+				}
+				//self.vis.push(new Place({name: self.markers[i].title, address: self.markers[i].address}));
+				self.markers[i].setVisible(true);console.log(self.visiblePlaces().length);
 			}
 		}
 	});
