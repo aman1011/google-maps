@@ -48,13 +48,10 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 			// Making all markers disappear
 			self.markers[i].setVisible(false);
-			//debugger;
 		}
-		//debugger;
 	}
 
 	this.setCurrentPlace = function(place) {
-		//debugger;
 		for( var i = 0; i < self.markers.length; i++) {
 
 			if (place.name == self.markers[i].title) {
