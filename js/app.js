@@ -45,11 +45,6 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 		self.allPlaces.push(newObj);
 	});
 
-	self.allPlaces.forEach(function(place) {
-    	self.visiblePlaces.push(place);
-  	});
-
-  	
 	// function to set the current place.
 	this.clearAllMarkers = function() {
 		for( var i = 0; i < self.markers.length; i++) {
@@ -85,38 +80,47 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	console.log(self.allPlaces()[0].name);
 	
 	this.searchedPlace = ko.computed(function() {
-		console.log('reaching in computed search place');
-		console.log(self.userInput());
-		console.log(self.allPlaces()[0].name);
-
-		//
-		self.visiblePlaces([]);
-		for (var i = 0; i < self.allPlaces().length; i++) {
-			self.visiblePlaces.push(self.allPlaces()[i]);
-		}
-
-		console.log('initial name' + self.visiblePlaces()[0].name);
-		console.log('length' + self.visiblePlaces().length);
 
 		// clearing all markers.
+		
 		self.clearAllMarkers();
+		if (self.userInput() == '') {
+			self.visiblePlaces.removeAll();
+			self.allPlaces().forEach(function(place) {
+    			self.visiblePlaces.push(place);
+  			});
 
-		for (var i = 0; i < self.markers.length; i++) {
+  			for (var i = 0; i < self.markers.length; i++) {
+  				self.markers[i].setVisible(true);
+  			}
+			return ;
+		}
+		else {
+			console.log('reaching in else');
+			console.log('self.userInput' + self.userInput());
+			console.log('removing all from visible places');
 
-			// check if its a substring.
-			if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
+			self.visiblePlaces.removeAll();
+			console.log('length after removing ' + self.visiblePlaces().length);
+			for (var i = 0; i < self.markers.length; i++) {
 
-				// Showing markers.
-				console.log('markertitle ' + self.markers[i].title);
-				for ( var j = 0; j < self.visiblePlaces().length; j++) {
-					console.log('visible place name' + self.visiblePlaces()[j].name);
-					if (self.markers[i].title !== self.visiblePlaces()[j].name) {
-						console.log('reaching in removal');
-						self.visiblePlaces.remove(self.visiblePlaces()[j]);
+				// check if its a substring.
+				if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
+
+					// Showing markers.
+					console.log('markertitle ' + self.markers[i].title);
+					//Iterate through allPlaces and push the one 
+					// with the name as marker title in visible places.
+					for (var j = 0; j < self.allPlaces().length; j++) {
+						if (self.markers[i].title == self.allPlaces()[j].name) {
+							self.visiblePlaces.push(self.allPlaces()[j]);
+							break;
+						}
+						
+					self.markers[i].setVisible(true);
+					console.log(self.visiblePlaces().length);
 					}
 				}
-				//self.vis.push(new Place({name: self.markers[i].title, address: self.markers[i].address}));
-				self.markers[i].setVisible(true);console.log(self.visiblePlaces().length);
 			}
 		}
 	});
