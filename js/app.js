@@ -26,7 +26,9 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 				(function (marker, title) {
 					 google.maps.event.addListener(marker, 'click', function () {
+
 						infoWindow.close();
+						toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
 						timeInfo(marker, infoWindow);
 					 });
@@ -34,7 +36,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 				bounds.extend(marker.position);
 			} else {
-				alert('The google geocoder API failed to get the map info.Please try again in some time !!').
+				alert('The google geocoder API failed to get the map info.Please try again in some time !!');
 			}
 		});
 		self.allPlaces.push(newObj);
@@ -53,15 +55,15 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 	this.setCurrentPlace = function(place) {
 		//debugger;
-		self.clearAllMarkers();
 		for( var i = 0; i < self.markers.length; i++) {
 
 			if (place.name == self.markers[i].title) {
 				self.markers[i].setVisible(true);
-
+				toggleBounce(self.markers[i]);
 				(function (marker, title) {
 					infoWindow.close();
 					 google.maps.event.addListener(marker, 'click', function () {
+					 	toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
 						timeInfo(marker, infoWindow);
 					 });
@@ -287,5 +289,15 @@ function timeInfo(marker, infoWindow) {
 			$timeElement.append('Could not find the restaurant via fourSquare API' + + "\n");
 		}
 	});
+}
+
+
+function toggleBounce(marker) {
+	console.log('reached' + marker.getAnimation())
+  if (marker.getAnimation() !== null) {
+    marker.setAnimation(null);
+  } else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
 }
 
