@@ -32,6 +32,7 @@ h3 {
 	left: 362px;
 	position: absolute;
 	right: 0px;
+	float: left;
 }
 
 .options-box {
@@ -44,6 +45,7 @@ h3 {
 	width: 340px;
 	background-color: black;
 	color: white;
+	float: left;
 }
 
 #pano {
@@ -87,5 +89,10 @@ h3 {
 	font-family: Arial;
 	font-size: 70%;
 	position: relative;
+}
+
+@media screen (min-width: 0px) and (max-width: 400px) {
+	.options-box { width: 50%, order: 1; }
+	#map {width: 50%, order: 2;}
 }
 

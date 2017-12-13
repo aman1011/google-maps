@@ -93,6 +93,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
   			for (var i = 0; i < self.markers.length; i++) {
   				self.markers[i].setVisible(true);
   			}
+  			self.timeInfo.removeAll();
 			return ;
 		}
 		else {
