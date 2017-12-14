@@ -252,11 +252,18 @@ function timeInformation(marker, viewModel) {
 	$.ajax({
 		url: request_url,
 		success: function (data) {
+			console.log('reaching in first AJAX call');
 			var venues = data.response.venues;
-			var foundFlag = true;
+			var foundRestaurant = false;
 			for (var i = 0; i < venues.length; i++) {
+				console.log('reaching in first for');
+				console.log('marker ' + marker.title)
+				console.log('pub name ' + venues[i].name + venues[i].id);
 				if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
 
+					//setting the flag.
+					foundRestaurant = true;
+					console.log('reaching in first if');
 					viewModel.timeInfoHeading('Open Timings');
 					console.log('marker ' + marker.title)
 					console.log('pub name ' + venues[i].name + venues[i].id);
@@ -269,6 +276,7 @@ function timeInformation(marker, viewModel) {
 					$.ajax({
 						url: timeUrl,
 						success: function (data) {
+							console.log('reaching in second AJAX call');
 							var timeFrames = data.response.popular.timeframes;
 							console.log('first element is '+ timeFrames[0]);
 							var timeContent = '';
@@ -330,8 +338,11 @@ function timeInformation(marker, viewModel) {
 						}
 					});
 					break;
-				} 
+				}
 			}
+			if (!foundRestaurant) {
+					viewModel.timeInfo.push({day: 'Could not find the restaurant'});
+			} 
 		},
 		error: function(e) {
 			viewModel.timeInfo.push({day: 'Could not find the restaurant via fourSquare API'});
