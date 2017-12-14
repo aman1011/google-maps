@@ -72,11 +72,6 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 				(function (marker, title) {
 					infoWindow.close();
-					 google.maps.event.addListener(marker, 'click', function () {
-					 	toggleBounce(marker);
-						populateinfoWindow(marker, infoWindow);
-						timeInformation(self);
-					 });
 				 })(marker, place.name);
 
 				 bounds.extend(self.markers[i].position);
