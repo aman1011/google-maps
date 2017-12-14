@@ -191,6 +191,10 @@ function initMap() {
 	});
 }
 
+function googleError() {
+	alert("Google map API's could not be loaded ");
+}
+
 function populateinfoWindow(marker, infoWindow) {
 				
 	// Check to make sure the infoWindow is not already opened on this marker.
