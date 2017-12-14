@@ -41,15 +41,16 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 				bounds.extend(marker.position);
 			} else {
-				errFlag = true;
+
+				// Alerting only once.
+				if (!errFlag) {
+					alert('Geo code was not able to get data for one or more places');
+					errFlag = true;
+				}
 			}
 		});
 		self.allPlaces.push(newObj);
 	});
-
-	if (errFlag) {
-		alert('Geo code was not able to get data for one or more places');
-	}
 
 	// function to set the current place.
 	this.clearAllMarkers = function() {
@@ -69,8 +70,6 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 				self.markers[i].setVisible(true);
 				toggleBounce(self.markers[i]);
 
-				// opening infoWindow.
-				populateinfoWindow(marker, infoWindow);
 				(function (marker, title) {
 					infoWindow.close();
 					 google.maps.event.addListener(marker, 'click', function () {
@@ -194,7 +193,6 @@ function initMap() {
 
 function populateinfoWindow(marker, infoWindow) {
 				
-				console.log('reach here');
 	// Check to make sure the infoWindow is not already opened on this marker.
 	if (infoWindow.marker != marker) {
 		infoWindow.marker = marker;
