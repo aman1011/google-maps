@@ -313,12 +313,12 @@ function timeInformation(viewModel) {
 
 								}
 								if (!foundFlag) {
-									viewModel.timeInfo('Could not find the restaurant via fourSquare API' + "\n");
+									viewModel.timeInfo.push({day: 'Could not find timings for the restaurant'});
 								}
 							}
 						},
 						error: function (e) {
-							viewModel.timeInfo('Could not find timing for the resturant through fourSquare' + "\n");
+							viewModel.timeInfo.push({day: 'Could not find timing for the resturant through fourSquare'});
 						}
 					});
 					break;
@@ -326,7 +326,7 @@ function timeInformation(viewModel) {
 			}
 		},
 		error: function(e) {
-			viewModel.timeInfo('Could not find the restaurant via fourSquare API' + + "\n");
+			viewModel.timeInfo.push({day: 'Could not find the restaurant via fourSquare API'});
 		}
 	});
 }
