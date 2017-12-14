@@ -328,9 +328,6 @@ function timeInformation(marker, viewModel) {
 									viewModel.timeInfo.push({day: openHours});
 
 								}
-								if (!foundFlag) {
-									viewModel.timeInfo.push({day: 'Could not find timings for the restaurant'});
-								}
 							} else {
 								viewModel.timeInfo.push({day: 'Could not find timings from fourSquare API'});
 							}
