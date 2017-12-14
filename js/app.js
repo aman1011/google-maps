@@ -333,10 +333,7 @@ function timeInformation(viewModel) {
 
 
 function toggleBounce(marker) {
-  if (marker.getAnimation() !== null) {
-    marker.setAnimation(null);
-  } else {
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-  }
+	marker.setAnimation(google.maps.Animation.BOUNCE);
+  	setTimeout(function(){ marker.setAnimation(null); }, 2500);
 }
 
