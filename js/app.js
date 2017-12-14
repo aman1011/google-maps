@@ -87,6 +87,8 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 		// clearing all markers.
 		
 		self.clearAllMarkers();
+		// clearing viewmodel's opentimings.
+		self.timeInfo.removeAll();
 		if (self.userInput() == '') {
 			self.visiblePlaces.removeAll();
 			self.allPlaces().forEach(function(place) {
