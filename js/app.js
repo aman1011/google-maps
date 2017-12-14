@@ -249,10 +249,10 @@ function timeInformation(viewModel) {
 		url: request_url,
 		success: function (data) {
 			var venues = data.response.venues;
+			var foundFlag = true;
 			for (var i = 0; i < venues.length; i++) {
 				if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
 
-					var foundFlag = true;
 					viewModel.timeInfoHeading('Open Timings');
 					// we have reached in our pub.
 					// Now remains to find the open and close time
@@ -312,6 +312,9 @@ function timeInformation(viewModel) {
 									viewModel.timeInfo.push({day: openHours});
 
 								}
+								if (!foundFlag) {
+									viewModel.timeInfo('Could not find the restaurant via fourSquare API' + "\n");
+								}
 							}
 						},
 						error: function (e) {
@@ -320,9 +323,6 @@ function timeInformation(viewModel) {
 					});
 					break;
 				} 
-			}
-			if (!foundFlag) {
-				viewModel.timeInfo('Could not find the restaurant via fourSquare API' + "\n");
 			}
 		},
 		error: function(e) {
