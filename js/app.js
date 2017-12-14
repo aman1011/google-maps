@@ -66,8 +66,11 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 			// Clearing away the existing bouncing animation.
 			self.markers[i].setAnimation(null);
+			self.timeInfo.removeAll();
+
 			if (place.name == self.markers[i].title) {
 				self.markers[i].setVisible(true);
+				timeInformation(self.markers[i], self);
 				toggleBounce(self.markers[i]);
 
 				(function (marker, title) {
