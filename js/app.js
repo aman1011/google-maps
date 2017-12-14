@@ -83,8 +83,6 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 	}
 
 	// filtering places
-	console.log(self.allPlaces()[0].name);
-	
 	this.searchedPlace = ko.computed(function() {
 
 		// clearing all markers.
@@ -105,31 +103,25 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 			return ;
 		}
 		else {
-			console.log('reaching in else');
-			console.log('self.userInput' + self.userInput());
-			console.log('removing all from visible places');
 
 			self.visiblePlaces.removeAll();
-			console.log('length after removing ' + self.visiblePlaces().length);
 			for (var i = 0; i < self.markers.length; i++) {
 
 				// check if its a substring.
 				if (self.markers[i].title.toLowerCase().indexOf(self.userInput().toLowerCase()) !== -1) {
 
 					// Showing markers.
-					console.log('markertitle ' + self.markers[i].title);
 					//Iterate through allPlaces and push the one 
 					// with the name as marker title in visible places.
 					for (var j = 0; j < self.allPlaces().length; j++) {
-						console.log('the place name: ' + self.allPlaces()[j].name)
+
 						if (self.markers[i].title == self.allPlaces()[j].name) {
-							console.log('pushing here');
+
 							self.visiblePlaces.push(self.allPlaces()[j]);
 							//break;
 						}
 						
 						self.markers[i].setVisible(true);
-						console.log(self.visiblePlaces().length);
 					}
 				}
 			}
@@ -250,32 +242,25 @@ function timeInformation(marker, viewModel) {
 	var foundFlag = false;
 
 	// Resetting the time information.
-	console.log('before removing the time ingo value');
-	console.log(viewModel.timeInfo().length);
 	viewModel.timeInfo.removeAll();
-	console.log('after removing the time info value ');
-	console.log(viewModel.timeInfo().length);
+
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
 	var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
 	$.ajax({
 		url: request_url,
 		success: function (data) {
-			console.log('reaching in first AJAX call');
+
 			var venues = data.response.venues;
 			var foundRestaurant = false;
 			for (var i = 0; i < venues.length; i++) {
-				console.log('reaching in first for');
-				console.log('marker ' + marker.title)
-				console.log('pub name ' + venues[i].name + venues[i].id);
+
 				if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
 
 					//setting the flag.
 					foundRestaurant = true;
-					console.log('reaching in first if');
+
 					viewModel.timeInfoHeading('Open Timings');
-					console.log('marker ' + marker.title)
-					console.log('pub name ' + venues[i].name + venues[i].id);
 
 					// we have reached in our pub.
 					// Now remains to find the open and close time
@@ -285,7 +270,7 @@ function timeInformation(marker, viewModel) {
 					$.ajax({
 						url: timeUrl,
 						success: function (data) {
-							console.log('reaching in second AJAX call');
+
 							var timeFrames = data.response.popular.timeframes;
 							//console.log('first element is '+ timeFrames[0]);
 							var timeContent = '';
@@ -333,7 +318,7 @@ function timeInformation(marker, viewModel) {
 										//Removing the + character representing AM.
 										openHours = openHours.replace('+', '');
 									}
-									console.log('the open hour data ' + openHours);
+		
 									viewModel.timeInfo.push({day: openHours});
 
 								}
