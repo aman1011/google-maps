@@ -35,7 +35,7 @@ var ViewModel = function (googleMap, myPlaces, infoWindow, bounds) {
 
 						toggleBounce(marker);
 						populateinfoWindow(marker, infoWindow);
-						timeInformation(self);
+						timeInformation(marker, self);
 					 });
 				})(marker, title);
 
@@ -237,11 +237,15 @@ function populateinfoWindow(marker, infoWindow) {
 	}
 }
 
-function timeInformation(viewModel) {
+function timeInformation(marker, viewModel) {
 	var foundFlag = false;
 
 	// Resetting the time information.
+	console.log('before removing the time ingo value');
+	console.log(viewModel.timeInfo().length);
 	viewModel.timeInfo.removeAll();
+	console.log('after removing the time info value ');
+	console.log(viewModel.timeInfo().length);
 	// Making the ajax call to get the information from the 
 	// four square to get the venue id, which will be later used
 	var request_url = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.position.lat() + ',' + marker.position.lng() + '&client_id=KXTPUTXWJXUUUE22RHHQ3YNYEGZHBG31AXS0CFOHWL3AHANU&client_secret=3IF050LBAUYMCD1UV55HV2IAA1WOLR3NFMWYOAVYUVCNU5U2&v=20171127';
@@ -254,6 +258,9 @@ function timeInformation(viewModel) {
 				if (venues[i].name.toLowerCase().indexOf(marker.title.toLowerCase()) !== -1) {
 
 					viewModel.timeInfoHeading('Open Timings');
+					console.log('marker ' + marker.title)
+					console.log('pub name ' + venues[i].name + venues[i].id);
+
 					// we have reached in our pub.
 					// Now remains to find the open and close time
 					// This will be done via another ajax call to 
@@ -263,6 +270,7 @@ function timeInformation(viewModel) {
 						url: timeUrl,
 						success: function (data) {
 							var timeFrames = data.response.popular.timeframes;
+							console.log('first element is '+ timeFrames[0]);
 							var timeContent = '';
 							if( timeFrames ) {
 								for (var j = 0; j < timeFrames.length; j++) {
@@ -308,7 +316,7 @@ function timeInformation(viewModel) {
 										//Removing the + character representing AM.
 										openHours = openHours.replace('+', '');
 									}
-
+									console.log('the open hour data ' + openHours);
 									viewModel.timeInfo.push({day: openHours});
 
 								}
