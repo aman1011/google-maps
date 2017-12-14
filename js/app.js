@@ -278,7 +278,7 @@ function timeInformation(marker, viewModel) {
 						success: function (data) {
 							console.log('reaching in second AJAX call');
 							var timeFrames = data.response.popular.timeframes;
-							console.log('first element is '+ timeFrames[0]);
+							//console.log('first element is '+ timeFrames[0]);
 							var timeContent = '';
 							if( timeFrames ) {
 								for (var j = 0; j < timeFrames.length; j++) {
@@ -331,7 +331,10 @@ function timeInformation(marker, viewModel) {
 								if (!foundFlag) {
 									viewModel.timeInfo.push({day: 'Could not find timings for the restaurant'});
 								}
+							} else {
+								viewModel.timeInfo.push({day: 'Could not find timings from fourSquare API'});
 							}
+
 						},
 						error: function (e) {
 							viewModel.timeInfo.push({day: 'Could not find timing for the resturant through fourSquare'});
