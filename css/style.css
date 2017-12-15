@@ -53,7 +53,7 @@ h3 {
 }
 
 .text {
-	font-size: 12px;
+	font-size: 14px;
 	font-family: sans-serif;
 }
 
@@ -86,14 +86,13 @@ h3 {
 	background-color: black;
 	color: white;
 	font-family: Arial;
-	font-size: 70%;
 	position: relative;
 }
 
 @media screen and (min-width: 0px) and (max-width: 412px) {
 	.container { width: 90%; position: absolute;}
 	.options-box {width: 100%; padding: 1px 1px 1px 1px;}
-	#fourSqaure { font-size: 150%; }
+	.text {font-size: 16px;}
 	#map {width: 200%;}
 }
 
