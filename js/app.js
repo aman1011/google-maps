@@ -160,16 +160,16 @@ function initMap() {
 			address: '185 Walton Breck Rd, Liverpool L4 0RE, UK'
 		},
 		{
-			name: 'Arkles',
-			address: '77 Anfield Rd, Liverpool L4 0TJ, UK'
+			name: 'The Thomas Frost (Wetherspoon)',
+			address: '177-187 Walton Rd, Liverpool L4 4AJ, United Kingdom'
 		},
 		{
 			name: 'The Sandon',
 			address: '178-182 Oakfield Rd, Liverpool L4 0UH, UK'
 		},
 		{
-			name: 'The Park Pub',
-			address: '216-218 Walton Breck Rd, Liverpool L4 0RQ, UK'
+			name: 'The Boot Room Sports Cafe',
+			address: 'Anfield, Liverpool, L4 0TH, United Kingdom'
 		},
 		{
 			name: 'The Twelfth Man',

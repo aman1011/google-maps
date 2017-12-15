@@ -93,6 +93,7 @@ h3 {
 @media screen and (min-width: 0px) and (max-width: 412px) {
 	.container { width: 90%; position: absolute;}
 	.options-box {width: 100%; padding: 1px 1px 1px 1px;}
-	#map {width: 100%;}
+	#fourSqaure { font-size: 150%; }
+	#map {width: 200%;}
 }
 
